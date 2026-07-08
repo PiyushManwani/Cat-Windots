@@ -1,0 +1,39 @@
+# Initialize Starship prompt
+$ENV:STARSHIP_CONFIG = "$env:USERPROFILE\.config\starship.toml"
+Invoke-Expression (&starship init powershell)
+
+# Custom Aliases
+Set-Alias ll Get-ChildItem
+Set-Alias la Get-ChildItem -Force
+Set-Alias g git
+Set-Alias np notepad
+
+# Fastfetch on PowerShell startup
+fastfetch
+
+# Navigation shortcuts
+function .. { Set-Location .. }
+function ... { Set-Location ..\.. }
+function .... { Set-Location ..\..\.. }
+
+# Quick edit profile function
+function edit-profile { notepad $PROFILE }
+
+# Reload profile function
+function reload-profile { . $PROFILE }
+
+# Directory listing with colors
+function ll {
+    Get-ChildItem | Format-Table -AutoSize
+}
+
+# Make terminal history better
+Set-PSReadLineOption -HistorySaveStyle SaveIncrementally
+Set-PSReadLineOption -HistoryNoDuplicates
+Set-PSReadLineOption -PredictionSource History
+
+# Enable tab completion for git
+Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
+    param($wordToComplete, $commandAst, $cursorPosition)
+    git completion -- "$wordToComplete"
+}
